@@ -35,8 +35,26 @@ Spring 有[很多项目](https://spring.io/projects), 如 `Spring Framework`, `S
 
 > ![](./assets/banner.png)
 
+Spring Framework 可分为以下几部分
 
+- Core
+> 提供 Spring 框架的基本功能. IoC 容器, AOP, Validation, Data Binding, Type Conversion ...
+- Dada Access
+> 数据访问相关库, 数据库事务管理, JDBC, ORM 框架的集成
+- Web Servlet
+> Spring MVC, WebSocket, SockJS, STOMP messaging
+- Web Reactive
+> Spring WebFlux, WebClient, WebSocket
+- Integration
+> 用于集成其他外部技术, 如: JMS, Email, Tasks ...
+- Languages
+> 支持 Kotlin, Groovy, 动态语言
+- Testing
+> Spring 自身框架的测试工具
 
+## Spring Core
+
+### IoC 容器
 
 # Spring Boot
 
@@ -49,6 +67,8 @@ Spring 有[很多项目](https://spring.io/projects), 如 `Spring Framework`, `S
 [Source](https://github.com/spring-cloud)
 
 > ![](./assets/spring-cloud.png)
+
+# Spring 的缺点
 
 ### 参考
 
