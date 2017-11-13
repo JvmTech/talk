@@ -56,6 +56,125 @@ Spring Framework 可分为以下几部分
 
 ### IoC 容器
 
+Inversion of Control (IoC, 控制反转) 也被称作 dependency injection (DI, 依赖注入). 这是对象定义他们依赖的过程, 通过设置一个对象构造函数的参数或设置创建对象工厂的参数,或设置对象(被构造后或被工厂返回)的实例的属性, 当容器创建 Bean 的时候会把 Bean 的依赖注入. 这过程对比对象自己控制自己的初始化和通过直接调用对象的构造函数来创建依赖的过程是倒转的, 这也是IOC名字的由来.
+
+为什么要这么做? 可以解决什么问题?
+
+> 对象依赖松耦合. 不用修改代码核心逻辑和处理流程, 通过配置就可以定义对象依赖树, 满足不同场景的实现需求.
+
+#### BeanFactory 和 ApplicationContext 接口
+
+``` java
+public interface BeanFactory {
+    Object getBean(String name);
+    <T> T getBean(String name, Class<T> requiredType);
+    <T> T getBean(Class<T> requiredType);
+    Object getBean(String name, Object... args);
+    <T> T getBean(Class<T> requiredType, Object... args);
+    boolean containsBean(String name);
+    boolean isSingleton(String name);
+    boolean isPrototype(String name);
+    boolean isTypeMatch(String name, ResolvableType typeToMatch);
+    boolean isTypeMatch(String name, Class<?> typeToMatch);
+    Class<?> getType(String name);
+    String[] getAliases(String name);
+}
+
+public interface ApplicationContext extends EnvironmentCapable, ListableBeanFactory, HierarchicalBeanFactory, MessageSource, ApplicationEventPublisher, ResourcePatternResolver {
+    String getId();
+    String getApplicationName();
+    String getDisplayName();
+    long getStartupDate();
+    ApplicationContext getParent();
+    AutowireCapableBeanFactory getAutowireCapableBeanFactory();
+}
+```
+
+`BeanFactory` 提供了管理各种对象的配置机制和一些基本功能.
+
+`ApplicationContext` 是 `BeanFactory` 的子接口是其超集, 添加了与 Spring AOP 特性的上集成, 国际化支持, 和 应用层面的特定上下文.
+
+#### 容器的魔法
+
+> ![](./assets/container-magic.png)
+
+#### 配置元数据
+
+提供一下三种方式, 注意三种方式可以混用.
+
+##### XML-based
+> 以 `XML` 格式的文件, 这是传统的方式. 如:
+``` XML
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean id="..." class="..."></bean>
+</beans>
+```
+
+##### Annotation-based
+> Spring 2.5 引入 Java 的注解方式(Annotation). 如: `@Autowired`, `@Inject`, `@Resource`, `@Value`, `@RestController`, `@Component`, `@Service`, `@Repository`
+
+##### Java-based
+> Spring 3.0 开始, 可以通过 Java 代码.
+
+#### 初始化容器
+> `ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");`
+
+#### 例子
+
+通过构造函数:
+
+``` Java
+package x.y;
+public class Foo {
+    public Foo(Bar bar, Baz baz) {
+        // ...
+    }
+}
+```
+``` XML
+<beans>
+    <bean id="foo" class="x.y.Foo">
+        <constructor-arg ref="bar"/>
+        <constructor-arg ref="baz"/>
+    </bean>
+    <bean id="bar" class="x.y.Bar"/>
+    <bean id="baz" class="x.y.Baz"/>
+</beans>
+```
+
+``` Java
+package examples;
+public class ExampleBean {
+    private int years;
+    private String ultimateAnswer;
+    public ExampleBean(int years, String ultimateAnswer) {
+        this.years = years;
+        this.ultimateAnswer = ultimateAnswer;
+    }
+}
+```
+```XML
+<bean id="exampleBean" class="examples.ExampleBean">
+    <constructor-arg type="int" value="7500000"/>
+    <constructor-arg type="java.lang.String" value="42"/>
+</bean>
+```
+
+通过 `Setter` 方法:
+``` Java
+package examples;
+public class SimpleMovieLister {
+    private MovieFinder movieFinder;
+    public void setMovieFinder(MovieFinder movieFinder) {
+        this.movieFinder = movieFinder;
+    }
+}
+```
+
+### Aspect Oriented Programming
+
+
 # Spring Boot
 
 [Source](https://github.com/spring-projects/spring-boot)
